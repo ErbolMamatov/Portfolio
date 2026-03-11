@@ -10,9 +10,7 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import {
-  FaArrowLeft,
-} from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 
 import {
   SiReact,
@@ -90,6 +88,7 @@ function LanguageSwitch() {
                   ? "text-white bg-white/10 border border-white/15"
                   : "text-gray-400 hover:text-white",
               ].join(" ")}
+              type="button"
             >
               {l.label}
             </button>
@@ -177,7 +176,8 @@ function Home() {
             variants={fadeUp}
             className="mt-8 text-xs sm:text-sm text-gray-500 tracking-widest"
           >
-            React · React Router · Redux Toolkit · TailwindCSS · REST API · Axios
+            React · React Router · Redux Toolkit · TailwindCSS · REST API ·
+            Axios
           </motion.div>
         </div>
       </motion.div>
@@ -191,22 +191,22 @@ function Projects() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
- const projects = [
-  {
-    title: t("projects.items.restaurant.title"),
-    desc: t("projects.items.restaurant.desc"),
-    tech: "React · React Router · Axios · REST API · TailwindCSS",
-    link: "https://project1-pink-kappa.vercel.app/",
-    image: foodielandImg,
-  },
-  {
-    title: "Sneaker Store",
-    desc: "React ecommerce-style frontend with beautiful visual design and clean UI. Desktop-focused version without responsive layout.",
-    tech: "React · JavaScript · CSS · UI Design",
-    link: "https://sneaker-store-neon.vercel.app/",
-    image: sneakerImg,
-  },
-];
+  const projects = [
+    {
+      title: t("projects.items.restaurant.title"),
+      desc: t("projects.items.restaurant.desc"),
+      tech: "React · React Router · Axios · REST API · TailwindCSS",
+      link: "https://project1-pink-kappa.vercel.app/",
+      image: foodielandImg,
+    },
+    {
+      title: t("projects.items.sneaker.title"),
+      desc: t("projects.items.sneaker.desc"),
+      tech: "React · JavaScript · CSS · UI Design",
+      link: "https://sneaker-store-neon.vercel.app/",
+      image: sneakerImg,
+    },
+  ];
 
   return (
     <div className="min-h-screen text-white px-6 sm:px-10 py-24 bg-[#0B0F19]">
@@ -227,7 +227,9 @@ function Projects() {
           <motion.div
             key={index}
             whileHover={{ scale: 1.05 }}
-            onClick={() => window.open(project.link, "_blank")}
+            onClick={() =>
+              window.open(project.link, "_blank", "noopener,noreferrer")
+            }
             className="bg-[#0F1424] rounded-2xl p-6 border border-white/10 cursor-pointer w-full"
           >
             <div className="h-36 mb-6 overflow-hidden rounded-xl">
