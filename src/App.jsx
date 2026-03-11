@@ -1,4 +1,5 @@
 import foodielandImg from "./assets/foodieland.png";
+import sneakerImg from "./assets/sneaker-store.png";
 
 import {
   BrowserRouter as Router,
@@ -6,15 +7,13 @@ import {
   Route,
   Link,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
+
 import {
-  FaGithub,
-  FaInstagram,
-  FaTelegramPlane,
-  FaExternalLinkAlt,
   FaArrowLeft,
-  FaPlus,
 } from "react-icons/fa";
+
 import {
   SiReact,
   SiNodedotjs,
@@ -22,8 +21,12 @@ import {
   SiHtml5,
   SiCss3,
 } from "react-icons/si";
-import { useState } from "react";
+
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+import { useTranslation } from "react-i18next";
+
 import Experience from "./components/Experience";
 import Contact from "./components/Contact";
 
@@ -47,9 +50,61 @@ const fadeUp = {
   },
 };
 
+/* ================= HELPERS ================= */
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
+
+  return null;
+}
+
+/* ================= LANGUAGE SWITCH ================= */
+
+function LanguageSwitch() {
+  const { i18n } = useTranslation();
+  const current = i18n.resolvedLanguage || i18n.language || "ru";
+
+  const langs = [
+    { code: "ru", label: "RU" },
+    { code: "ky", label: "KG" },
+    { code: "en", label: "EN" },
+  ];
+
+  return (
+    <div className="fixed top-5 right-5 z-[60] hidden lg:block">
+      <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-black/40 backdrop-blur border border-white/10">
+        {langs.map((l) => {
+          const active = current?.startsWith(l.code);
+
+          return (
+            <button
+              key={l.code}
+              onClick={() => i18n.changeLanguage(l.code)}
+              className={[
+                "px-3 py-1 rounded-full text-xs tracking-widest transition",
+                active
+                  ? "text-white bg-white/10 border border-white/15"
+                  : "text-gray-400 hover:text-white",
+              ].join(" ")}
+            >
+              {l.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ================= HOME ================= */
 
 function Home() {
+  const { t } = useTranslation();
+
   return (
     <AnimatePresence>
       <motion.div
@@ -58,67 +113,6 @@ function Home() {
         animate="visible"
         className="relative text-white min-h-screen flex overflow-hidden"
       >
-        {/* MOBILE SOCIALS */}
-        <div className="lg:hidden fixed top-5 right-5 z-50 flex gap-5 text-xl text-gray-400">
-          <a href="https://t.me/El_mmv" target="_blank" rel="noreferrer">
-            <FaTelegramPlane />
-          </a>
-          <a
-            href="https://www.instagram.com/mmv__el"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <FaInstagram />
-          </a>
-          <a
-            href="https://github.com/ErbolMamatov"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <FaGithub />
-          </a>
-        </div>
-
-        {/* INTRO PANELS */}
-        <motion.div
-          initial={{ scaleX: 1 }}
-          animate={{ scaleX: 0 }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
-          className="origin-left fixed inset-0 bg-black z-40 pointer-events-none"
-        />
-        <motion.div
-          initial={{ scaleX: 1 }}
-          animate={{ scaleX: 0 }}
-          transition={{ duration: 1.2, ease: "easeInOut", delay: 0.15 }}
-          className="origin-right fixed inset-0 bg-[#05070F] z-30 pointer-events-none"
-        />
-
-        {/* LEFT SIDEBAR (DESKTOP) */}
-        <motion.div
-          variants={fadeUp}
-          className="hidden lg:flex w-24 flex-col items-center justify-center gap-24 text-gray-400 text-sm"
-        >
-          <Link
-            to="/experience"
-            className="rotate-90 hover:text-white tracking-widest transition"
-          >
-            EXPERIENCE
-          </Link>
-          <Link
-            to="/projects"
-            className="rotate-90 hover:text-white tracking-widest transition"
-          >
-            PROJECTS
-          </Link>
-          <Link
-            to="/contact"
-            className="rotate-90 hover:text-white tracking-widest transition"
-          >
-            CONTACT
-          </Link>
-        </motion.div>
-
-        {/* MAIN */}
         <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
           <motion.h1
             variants={fadeUp}
@@ -131,16 +125,42 @@ function Home() {
             variants={fadeUp}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6"
           >
-            Software <span className="text-gray-500">Engineer.</span>
+            {t("home.titleMain")}{" "}
+            <span className="text-gray-500">{t("home.titleAccent")}</span>
           </motion.h2>
 
           <motion.p
             variants={fadeUp}
-            className="max-w-2xl text-gray-400 text-base sm:text-lg leading-relaxed mb-12"
+            className="max-w-2xl text-gray-400 text-base sm:text-lg leading-relaxed mb-10"
           >
-            Aspiring frontend developer focused on clean UI, motion design and
-            modern web experiences.
+            {t("home.description")}
           </motion.p>
+
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-wrap items-center justify-center gap-4 mb-10"
+          >
+            <Link
+              to="/experience"
+              className="px-6 py-3 rounded-full bg-white/10 border border-white/10 hover:bg-white/15 transition tracking-widest text-xs sm:text-sm"
+            >
+              EXPERIENCE
+            </Link>
+
+            <Link
+              to="/projects"
+              className="px-6 py-3 rounded-full bg-white/10 border border-white/10 hover:bg-white/15 transition tracking-widest text-xs sm:text-sm"
+            >
+              VIEW PROJECT
+            </Link>
+
+            <Link
+              to="/contact"
+              className="px-6 py-3 rounded-full bg-white text-black hover:opacity-90 transition tracking-widest text-xs sm:text-sm"
+            >
+              CONTACT
+            </Link>
+          </motion.div>
 
           <motion.div
             variants={fadeUp}
@@ -155,49 +175,10 @@ function Home() {
 
           <motion.div
             variants={fadeUp}
-            className="mt-16 text-gray-500 animate-bounce"
+            className="mt-8 text-xs sm:text-sm text-gray-500 tracking-widest"
           >
-            ⌄
+            React · React Router · Redux Toolkit · TailwindCSS · REST API · Axios
           </motion.div>
-        </div>
-
-        {/* RIGHT SIDEBAR (DESKTOP) */}
-        <motion.div
-          variants={fadeUp}
-          className="hidden lg:flex w-24 flex-col items-center justify-center gap-8 text-gray-400 text-2xl"
-        >
-          <a href="https://t.me/El_mmv" target="_blank" rel="noreferrer">
-            <FaTelegramPlane />
-          </a>
-          <a
-            href="https://www.instagram.com/mmv__el"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <FaInstagram />
-          </a>
-          <a
-            href="https://github.com/ErbolMamatov"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <FaGithub />
-          </a>
-        </motion.div>
-
-        {/* MOBILE NAV */}
-        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-          <div className="flex gap-10 px-8 py-4 rounded-full bg-black/40 backdrop-blur border border-white/10 text-gray-400 text-xs tracking-widest">
-            <Link to="/experience" className="hover:text-white">
-              EXP
-            </Link>
-            <Link to="/projects" className="hover:text-white">
-              PROJ
-            </Link>
-            <Link to="/contact" className="hover:text-white">
-              CONT
-            </Link>
-          </div>
         </div>
       </motion.div>
     </AnimatePresence>
@@ -208,16 +189,24 @@ function Home() {
 
 function Projects() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  const [projects] = useState([
-    {
-      title: "Project 1",
-      desc: "Deployed frontend project with modern UI and clean layout.",
-      tech: "HTML · CSS · JavaScript",
-      github: "#",
-      link: "https://project1-pink-kappa.vercel.app/",
-    },
-  ]);
+ const projects = [
+  {
+    title: t("projects.items.restaurant.title"),
+    desc: t("projects.items.restaurant.desc"),
+    tech: "React · React Router · Axios · REST API · TailwindCSS",
+    link: "https://project1-pink-kappa.vercel.app/",
+    image: foodielandImg,
+  },
+  {
+    title: "Sneaker Store",
+    desc: "React ecommerce-style frontend with beautiful visual design and clean UI. Desktop-focused version without responsive layout.",
+    tech: "React · JavaScript · CSS · UI Design",
+    link: "https://sneaker-store-neon.vercel.app/",
+    image: sneakerImg,
+  },
+];
 
   return (
     <div className="min-h-screen text-white px-6 sm:px-10 py-24 bg-[#0B0F19]">
@@ -225,53 +214,37 @@ function Projects() {
         onClick={() => navigate(-1)}
         className="fixed top-4 left-4 z-50 flex items-center gap-2 text-gray-400 hover:text-white"
       >
-        <FaArrowLeft /> Back
+        <FaArrowLeft /> {t("common.back")}
       </motion.button>
 
       <h1 className="text-4xl sm:text-5xl font-bold mb-16 text-center">
-        My <span className="text-gray-500">Projects</span>
+        {t("projects.titleMain")}{" "}
+        <span className="text-gray-500">{t("projects.titleAccent")}</span>
       </h1>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
-        {projects.map((p, i) => (
+      <div className="grid sm:grid-cols-2 gap-8 justify-center max-w-5xl mx-auto">
+        {projects.map((project, index) => (
           <motion.div
-            key={i}
+            key={index}
             whileHover={{ scale: 1.05 }}
-            className="bg-[#0F1424] rounded-2xl p-6 border border-white/10"
+            onClick={() => window.open(project.link, "_blank")}
+            className="bg-[#0F1424] rounded-2xl p-6 border border-white/10 cursor-pointer w-full"
           >
             <div className="h-36 mb-6 overflow-hidden rounded-xl">
               <img
-                src={foodielandImg}
-                alt="Project preview"
+                src={project.image}
+                alt={project.title}
                 className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
 
-            <h2 className="text-xl font-semibold mb-2">{p.title}</h2>
-            <p className="text-gray-400 text-sm mb-4">{p.desc}</p>
+            <h2 className="text-xl font-semibold mb-2">{project.title}</h2>
+
+            <p className="text-gray-400 text-sm mb-4">{project.desc}</p>
 
             <span className="text-xs tracking-widest text-gray-500">
-              {p.tech}
+              {project.tech}
             </span>
-
-            <div className="flex gap-4 mt-6 text-lg">
-              <a
-                href={p.github}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-white"
-              >
-                <FaGithub />
-              </a>
-              <a
-                href={p.link}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-white"
-              >
-                <FaExternalLinkAlt />
-              </a>
-            </div>
           </motion.div>
         ))}
       </div>
@@ -279,77 +252,15 @@ function Projects() {
   );
 }
 
-/* ================= FOOTER (НЕ ТРОНУТ) ================= */
+/* ================= FOOTER ================= */
 
 function Footer() {
+  const { t } = useTranslation();
+
   return (
-    <motion.footer
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 1.2 }}
-      className="relative mt-40 border-t border-white/10 overflow-hidden"
-    >
-      <motion.div
-        className="absolute inset-0 -z-10"
-        animate={{ opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          background: `radial-gradient(circle at 50% 0%, rgba(90,120,255,0.15), transparent 60%)`,
-        }}
-      />
-
-      <div className="max-w-6xl mx-auto px-8 py-20 text-white grid md:grid-cols-3 gap-16">
-        <div>
-          <h3 className="text-xl font-semibold tracking-widest mb-4">
-            MAMATOV ERBOL
-          </h3>
-          <p className="text-gray-400 text-sm leading-relaxed">
-            Frontend developer crafting clean interfaces, smooth animations and
-            modern web experiences.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-4 text-gray-400 tracking-widest text-sm">
-          <a href="/" className="hover:text-white transition">
-            HOME
-          </a>
-          <a href="/experience" className="hover:text-white transition">
-            EXPERIENCE
-          </a>
-          <a href="/projects" className="hover:text-white transition">
-            PROJECTS
-          </a>
-          <a href="/contact" className="hover:text-white transition">
-            CONTACT
-          </a>
-        </div>
-
-        <div className="flex gap-6 text-2xl">
-          <a href="https://t.me/El_mmv" target="_blank" rel="noreferrer">
-            <FaTelegramPlane />
-          </a>
-          <a
-            href="https://www.instagram.com/mmv__el"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <FaInstagram />
-          </a>
-          <a
-            href="https://github.com/ErbolMamatov"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <FaGithub />
-          </a>
-        </div>
-      </div>
-
-      <div className="text-center text-gray-500 text-xs tracking-widest pb-10">
-        © 2026 · BUILT WITH PASSION & MOTION
-      </div>
-    </motion.footer>
+    <footer className="mt-40 border-t border-white/10 py-16 text-center text-gray-500 text-sm">
+      © 2026 · {t("footer.description")}
+    </footer>
   );
 }
 
@@ -371,6 +282,9 @@ export default function App() {
           backgroundSize: "220% 220%",
         }}
       />
+
+      <ScrollToTop />
+      <LanguageSwitch />
 
       <Routes>
         <Route path="/" element={<Home />} />

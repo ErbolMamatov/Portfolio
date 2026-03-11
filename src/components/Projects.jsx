@@ -27,7 +27,6 @@ export default function Projects() {
 
   return (
     <div className="min-h-screen bg-[#0B0F19] text-white px-10 py-20 relative">
-      
       {/* FIXED BACK BUTTON */}
       <motion.button
         variants={fadeUp}
@@ -35,10 +34,7 @@ export default function Projects() {
         animate="visible"
         whileHover={{ x: -6 }}
         onClick={() => navigate(-1)}
-        className="fixed top-6 left-6 z-50
-                   flex items-center gap-3
-                   text-gray-400 hover:text-white
-                   transition"
+        className="fixed top-6 left-6 z-50 flex items-center gap-3 text-gray-400 hover:text-white transition"
       >
         <FaArrowLeft />
         <span className="text-sm tracking-wide">Back</span>
